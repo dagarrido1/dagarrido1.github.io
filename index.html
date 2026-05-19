@@ -1,1 +1,171 @@
-<h1> Prueba pagina </h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio | Diseñador & Desarrollador</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Portafolio</a>
+            <ul class="nav-menu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#proyectos">Proyectos</a></li>
+                <li><a href="#sobre-mi">Sobre Mí</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="greeting">Hola, soy</span>
+                <span class="name">Tu Nombre</span>
+            </h1>
+            <p class="hero-subtitle">
+                Diseñador & Desarrollador Web
+            </p>
+            <p class="hero-description">
+                Creo experiencias digitales únicas y funcionales
+            </p>
+            <div class="hero-buttons">
+                <a href="#proyectos" class="btn btn-primary">Ver Proyectos</a>
+                <a href="#contacto" class="btn btn-secondary">Contactar</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="image-placeholder">
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proyectos -->
+    <section id="proyectos" class="projects">
+        <h2 class="section-title">Mis Proyectos</h2>
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Proyecto 1 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://via.placeholder.com/400x300/6c63ff/ffffff?text=Proyecto+1" alt="Proyecto 1">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                        </a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Nombre del Proyecto</h3>
+                    <p>Descripción breve del proyecto y tecnologías utilizadas.</p>
+                    <div class="project-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyecto 2 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://via.placeholder.com/400x300/ff6b6b/ffffff?text=Proyecto+2" alt="Proyecto 2">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                        </a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>App Web</h3>
+                    <p>Aplicación web completa con funcionalidades avanzadas.</p>
+                    <div class="project-tags">
+                        <span>React</span>
+                        <span>Node.js</span>
+                        <span>MongoDB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyecto 3 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://via.placeholder.com/400x300/4ecdc4/ffffff?text=Proyecto+3" alt="Proyecto 3">
+                    <div class="project-overlay">
+                        <a href="#" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                        </a>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Diseño UX/UI</h3>
+                    <p>Diseño de interfaz y experiencia de usuario para app móvil.</p>
+                    <div class="project-tags">
+                        <span>Figma</span>
+                        <span>Adobe XD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre Mí -->
+    <section id="sobre-mi" class="about">
+        <h2 class="section-title">Sobre Mí</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    Soy un apasionado del diseño y desarrollo web con experiencia en crear 
+                    soluciones digitales innovadoras. Me especializo en transformar ideas 
+                    en experiencias visuales impactantes y funcionales.
+                </p>
+                <div class="skills">
+                    <h3>Habilidades</h3>
+                    <div class="skill-tags">
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>JavaScript</span>
+                        <span>React</span>
+                        <span>Node.js</span>
+                        <span>UI/UX Design</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="contact">
+        <h2 class="section-title">Contacto</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>tu@email.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Ciudad, País</span>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Tu Nombre. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
