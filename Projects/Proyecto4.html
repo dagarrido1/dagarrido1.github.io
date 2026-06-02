@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño de PCB para Emulador de ECG - Daniel Felipe Garrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(160deg, #f5f0f8 0%, #e8ecf5 30%, #f0f4f8 60%, #f5f0f0 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        /* ========== BARRA DE NAVEGACIÓN ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1a3a 25%, #1a2e3a 50%, #2d1a3a 75%, #1a1a2e 100%);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #6c63ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-logo:hover {
+            color: #e84855;
+            transform: translateX(-5px);
+        }
+        
+        .nav-logo i {
+            font-size: 1.1rem;
+        }
+        
+        .nav-title {
+            color: #c5c5dd;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+        
+        .nav-heart {
+            display: inline-block;
+            animation: heartbeat 1s ease-in-out infinite;
+            color: #ff6b7a;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+        }
+        
+        /* ========== CONTENEDOR PRINCIPAL ========== */
+        .container {
+            max-width: 950px;
+            margin: 0 auto 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1a3a 25%, #1a2e3a 50%, #2d1a3a 75%, #1a1a2e 100%);
+            color: #ffffff;
+            padding: 50px 40px 35px;
+            text-align: center;
+            border-bottom: 4px solid #e84855;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.015) 2px,
+                rgba(255, 255, 255, 0.015) 4px
+            );
+            pointer-events: none;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #e84855, #ff6b7a, #e84855);
+            border-radius: 2px;
+        }
+        
+        .header .ecg-wave {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            margin-bottom: 15px;
+            height: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .ecg-wave .wave-segment {
+            display: inline-block;
+            background: #ff6b7a;
+            border-radius: 2px;
+            animation: ecgPulse 2s ease-in-out infinite;
+        }
+        
+        .ecg-wave .wave-segment:nth-child(1) { width: 4px; height: 10px; animation-delay: 0s; }
+        .ecg-wave .wave-segment:nth-child(2) { width: 4px; height: 15px; animation-delay: 0.05s; }
+        .ecg-wave .wave-segment:nth-child(3) { width: 4px; height: 22px; animation-delay: 0.1s; }
+        .ecg-wave .wave-segment:nth-child(4) { width: 4px; height: 35px; animation-delay: 0.15s; }
+        .ecg-wave .wave-segment:nth-child(5) { width: 4px; height: 50px; animation-delay: 0.2s; }
+        .ecg-wave .wave-segment:nth-child(6) { width: 4px; height: 40px; animation-delay: 0.25s; }
+        .ecg-wave .wave-segment:nth-child(7) { width: 4px; height: 18px; animation-delay: 0.3s; }
+        .ecg-wave .wave-segment:nth-child(8) { width: 4px; height: 8px; animation-delay: 0.35s; }
+        .ecg-wave .wave-segment:nth-child(9) { width: 4px; height: 12px; animation-delay: 0.4s; }
+        .ecg-wave .wave-segment:nth-child(10) { width: 4px; height: 20px; animation-delay: 0.45s; }
+        
+        @keyframes ecgPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .header .project-icon {
+            font-size: 2.6em;
+            display: block;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 1.05em;
+            font-style: italic;
+            color: #c5c5dd;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .author {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #ff6b7a;
+            margin-bottom: 4px;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 45px 50px 55px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #e0e0ec;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section:hover {
+            background: #fafaff;
+            padding-left: 22px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 3px solid #e84855;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #e84855;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        
+        .section p {
+            text-align: justify;
+            color: #3a3a4e;
+            font-size: 1.05em;
+            margin-top: 8px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #fff0f0 0%, #ffe8ec 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2d1a3a;
+            border-left: 3px solid #e84855;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        
+        .technical-term {
+            font-family: 'Courier New', monospace;
+            background: #f0eef5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+            color: #2d1a3a;
+            letter-spacing: 0.5px;
+        }
+        
+        .component-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2d1a3a;
+            background: #f0eef8;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.93em;
+            border: 1px solid #d5cfe0;
+        }
+        
+        .stat-highlight {
+            font-family: 'Courier New', monospace;
+            color: #1a1a2e;
+            font-weight: 700;
+            background: #e8ecf5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+        
+        .tool-name {
+            font-style: italic;
+            font-weight: 600;
+            color: #2d1a3a;
+            border-bottom: 2px solid #e84855;
+            padding-bottom: 1px;
+        }
+        
+        .first-person {
+            color: #1a1a2e;
+            font-weight: 600;
+            font-style: italic;
+            background: linear-gradient(120deg, #fff0f0 0%, #ffe8ec 100%);
+            padding: 1px 5px;
+            border-radius: 3px;
+            border-bottom: 1px dotted #e84855;
+        }
+        
+        .standard-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #1a1a2e;
+            background: #f0f0f8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.93em;
+            border: 1px solid #d0d0e0;
+        }
+        
+        .team-member {
+            color: #2d1a3a;
+            font-weight: 600;
+            border-bottom: 2px dotted #c5c5dd;
+            padding-bottom: 1px;
+        }
+        
+        .phase-badge {
+            display: inline-block;
+            background: #1a1a2e;
+            color: #ff6b7a;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            letter-spacing: 0.8px;
+        }
+        
+        .research-card {
+            background: #f8f5ff;
+            border: 1px solid #d5cfe0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .research-card .card-label {
+            font-weight: 700;
+            color: #6c5ce7;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        
+        .validation-card {
+            background: #f0fff5;
+            border: 1px solid #b8dcc8;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .validation-card .card-label {
+            font-weight: 700;
+            color: #27ae60;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        
+        .design-card {
+            background: #fff8f0;
+            border: 1px solid #e8d5b0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border-left: 4px solid #e84855;
+        }
+        
+        .design-card .card-label {
+            font-weight: 700;
+            color: #e84855;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        
+        .deliverable-card {
+            background: #f5faff;
+            border: 1px solid #c5d5e8;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border-left: 4px solid #2980b9;
+        }
+        
+        .deliverable-card .card-label {
+            font-weight: 700;
+            color: #2980b9;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 12px;
+        }
+        
+        .section ul li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+            color: #3a3a4e;
+            font-size: 1.03em;
+            text-align: justify;
+        }
+        
+        .section ul li::before {
+            content: '♥';
+            position: absolute;
+            left: 0;
+            color: #e84855;
+            font-size: 0.7em;
+            top: 11px;
+        }
+        
+        /* ========== SECCIÓN DE DOCUMENTACIÓN PDF ========== */
+        .documentation-section {
+            background: linear-gradient(135deg, #f8f5ff 0%, #f0eef8 100%);
+            border: 2px dashed #e84855;
+            border-radius: 16px;
+            padding: 35px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .documentation-section:hover {
+            border-style: solid;
+            box-shadow: 0 10px 30px rgba(232, 72, 85, 0.15);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #faf8ff 0%, #f5f0fa 100%);
+        }
+        
+        .documentation-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .documentation-title i {
+            color: #e84855;
+            font-size: 1.3em;
+        }
+        
+        .documentation-description {
+            color: #3a3a4e;
+            font-size: 1.05em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .pdf-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1a3a 50%, #1a2e3a 100%);
+            color: #ffffff;
+            padding: 16px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.15em;
+            font-weight: 600;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            border: 2px solid #e84855;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pdf-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 72, 85, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .pdf-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(232, 72, 85, 0.4);
+            background: #e84855;
+            color: #ffffff;
+            border-color: #ff6b7a;
+        }
+        
+        .pdf-button:hover::before {
+            left: 100%;
+        }
+        
+        .pdf-button i {
+            font-size: 1.6em;
+            transition: transform 0.3s ease;
+        }
+        
+        .pdf-button:hover i {
+            animation: iconPulse 1s infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .pdf-info {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .pdf-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a5a6e;
+            font-size: 0.9em;
+        }
+        
+        .pdf-info-item i {
+            color: #e84855;
+        }
+        
+        /* ========== BOTÓN VOLVER ARRIBA ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1a3a 50%, #1a2e3a 100%);
+            color: #ff6b7a;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            font-size: 1.2rem;
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(232, 72, 85, 0.5);
+            background: #e84855;
+            color: #ffffff;
+        }
+        
+        .footer {
+            background: #1a1a2e;
+            color: #c5c5dd;
+            text-align: center;
+            padding: 22px;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer a {
+            color: #ff6b7a;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #e84855;
+        }
+        
+        .heart-rate {
+            display: inline-block;
+            animation: heartbeat 1s ease-in-out infinite;
+            color: #ff6b7a;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .header {
+                padding: 35px 20px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .header .ecg-wave {
+                height: 35px;
+                gap: 2px;
+            }
+            
+            .ecg-wave .wave-segment:nth-child(5) { height: 35px; }
+            
+            .content {
+                padding: 30px 25px 35px;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+                padding-bottom: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.2em;
+            }
+            
+            .section:hover {
+                padding-left: 14px;
+            }
+            
+            .nav-title {
+                display: none;
+            }
+            
+            .documentation-section {
+                padding: 25px 20px;
+            }
+            
+            .pdf-button {
+                padding: 14px 25px;
+                font-size: 1em;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== BARRA DE NAVEGACIÓN ========== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Portafolio
+            </a>
+            <span class="nav-title">
+        </div>
+    </nav>
+
+    <!-- ========== CONTENIDO PRINCIPAL ========== -->
+    <div class="container">
+        <div class="header">
+            <div class="ecg-wave">
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+                <span class="wave-segment"></span>
+            </div>
+            <h1>Diseño de PCB para<br>Emulador de ECG</h1>
+            <div class="subtitle">Señal Electrocardiográfica &bull; Diseño Profesional &bull; Estándares IPC</div>
+        </div>
+        
+        <div class="content">
+            <!-- SECCIÓN DE DOCUMENTACIÓN PDF -->
+            <div class="documentation-section">
+                <div class="documentation-title">
+                    <i class="fas fa-file-pdf"></i>
+                    Ver Documentación
+                </div>
+                <p class="documentation-description">
+                    Accede al documento para ver el diseño de la PCB.
+                </p>
+                <a href="../Documents/corregido.pdf" class="pdf-button" target="_blank">
+                    <i class="fas fa-file-pdf"></i>
+                    Abrir Documento PDF
+                    <i class="fas fa-external-link-alt" style="font-size: 0.9em;"></i>
+                </a>
+                <div class="pdf-info">
+                    <div class="pdf-info-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Formato PDF</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Diseño</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-language"></i>
+                        <span>Español</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen Ejecutivo -->
+            <div class="section">
+                <div class="section-title">🎯 Resumen Ejecutivo</div>
+                <p>
+                    <span class="first-person">Mi contribución principal en este proyecto fue el diseño y elaboración de la PCB para un emulador de señal electrocardiográfica (ECG).</span> El proceso inició con una <span class="phase-badge">fase de investigación exhaustiva</span> sobre los requisitos técnicos de la señal ECG y las características necesarias del circuito, para posteriormente proceder con el diseño de la placa una vez que el prototipo demostró su correcto funcionamiento en las pruebas de laboratorio coordinadas por <span class="team-member">Nicolás Díaz</span> (líder del grupo) y <span class="team-member">José Fernando Chilito</span>.
+                </p>
+            </div>
+            
+            <!-- Fase de Investigación -->
+            <div class="section">
+                <div class="section-title">🔬 Fase de Investigación</div>
+                
+                <div class="research-card">
+                    <div class="card-label">📚 Investigación Técnica Preliminar</div>
+                    <p style="margin-top: 4px;">
+                        Antes de iniciar el diseño de la PCB, <span class="first-person">realicé una investigación detallada sobre los parámetros fundamentales de una señal ECG real:</span> rango de frecuencias, amplitudes características, morfología de la onda y requisitos de precisión para una emulación confiable. Esta investigación fue la base que orientó las decisiones de diseño electrónico, la selección de componentes y la definición de la arquitectura del circuito, asegurando que la PCB resultante cumpliera con los estándares técnicos necesarios para una emulación fiel de la señal cardíaca.
+                    </p>
+                </div>
+                
+                <p style="margin-top: 16px;">
+                    <span class="first-person">La comprensión profunda de la señal ECG</span> —con su característica onda P, complejo QRS y onda T— fue esencial para dimensionar correctamente cada etapa del circuito y garantizar que la PCB pudiera reproducir fielmente la morfología completa de la señal cardíaca sin distorsión ni atenuación en ninguna de sus componentes frecuenciales.
+                </p>
+            </div>
+            
+            <!-- Validación del Prototipo -->
+            <div class="section">
+                <div class="section-title">🧪 Validación del Prototipo Previo al Diseño de PCB</div>
+                
+                <div class="validation-card">
+                    <div class="card-label">✅ Pruebas de Laboratorio y Aprobación</div>
+                    <p style="margin-top: 4px;">
+                        Previo al diseño definitivo de la PCB, <span class="team-member">Nicolás Díaz</span> y <span class="team-member">José Fernando Chilito</span> ejecutaron las pruebas de laboratorio sobre el prototipo inicial del emulador de ECG. Estas pruebas validaron el correcto funcionamiento del circuito, verificando la <span class="highlight">estabilidad de la señal generada</span>, la <span class="highlight">fidelidad de la forma de onda</span> y el comportamiento de las etapas analógicas. Los resultados satisfactorios de estas pruebas fueron la aprobación que <span class="first-person">me permitió proceder con confianza al diseño formal de la PCB</span>, garantizando que el layout reflejara fielmente un circuito ya validado experimentalmente.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Diseño y Elaboración de la PCB -->
+            <div class="section">
+                <div class="section-title">📐 Diseño y Elaboración de la PCB</div>
+                
+                <div class="design-card">
+                    <div class="card-label">🛠 Proceso de Diseño en EasyEDA</div>
+                    <p style="margin-top: 4px;">
+                        Con el prototipo aprobado, <span class="first-person">procedí al diseño de la PCB en <span class="tool-name">EasyEDA</span></span>, trasladando el esquemático validado a un layout profesional optimizado para manufactura.
+                    </p>
+                </div>
+                
+                <p style="margin-top: 16px;">
+                    Durante este proceso <span class="first-person">apliqué criterios de diseño rigurosos:</span>
+                </p>
+                <ul>
+                    <li><span class="first-person">Organicé los componentes por bloques funcionales</span> para mantener la integridad de la señal en cada etapa</li>
+                    <li><span class="first-person">Minimicé la longitud de las pistas críticas</span> para reducir ruido e interferencias electromagnéticas</li>
+                    <li><span class="first-person">Implementé un plano de tierra sólido</span> para garantizar la estabilidad de la señal en todo el ancho de banda</li>
+                    <li><span class="first-person">Verifiqué el diseño mediante el motor <span class="technical-term">DRC</span></span> para garantizar el cumplimiento de las normas <span class="standard-name">IPC</span></li>
+                </ul>
+                <p style="margin-top: 12px;">
+                    La correcta disposición de los componentes fue <span class="highlight">especialmente importante</span> dado que la señal ECG emulada exige alta fidelidad y baja distorsión en todo el rango de frecuencias de trabajo. Cualquier interferencia o acoplamiento parásito podría comprometer la precisión de la emulación y restar credibilidad a las pruebas de laboratorio que utilicen este dispositivo.
+                </p>
+            </div>
+            
+            <!-- Entregables y Resultado Final -->
+            <div class="section">
+                <div class="section-title">📦 Entregables y Resultado Final</div>
+                
+                <div class="deliverable-card">
+                    <div class="card-label">📋 Archivos Entregados para Fabricación</div>
+                    <p style="margin-top: 4px;">
+                        Como resultado de este proceso, <span class="first-person">entregué los archivos completos para fabricación:</span>
+                    </p>
+                    <ul>
+                        <li>Archivos <span class="standard-name">GERBER</span> (capas de cobre, máscara de soldadura, serigrafía y borde de corte)</li>
+                        <li><span class="standard-name">BOM</span> (Bill of Materials o lista de materiales)</li>
+                        <li>Archivo <span class="standard-name">Pick & Place</span> (coordenadas para ensamblaje automatizado)</li>
+                    </ul>
+                </div>
+                
+                <p style="margin-top: 16px;">
+                    La PCB diseñada representa la <span class="highlight">materialización formal del emulador de ECG</span>, consolidando en un formato profesional y reproducible el trabajo investigativo y experimental desarrollado por el equipo, y dejando el proyecto listo para su fabricación y uso en entornos de laboratorio universitario. <span class="first-person">El diseño final refleja la sinergia entre la investigación previa, la validación experimental del prototipo y los criterios de diseño profesional</span> que apliqué durante todo el proceso.
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+           &copy; 2026 Daniel Felipe Garrido Cuellar. Todos los derechos reservados.
+            <br>
+            <a href="../index.html">← Volver al Portafolio Principal</a>
+        </div>
+    </div>
+
+    <!-- ========== BOTÓN VOLVER ARRIBA ========== -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <script>
+        // Mostrar/ocultar botón "Volver arriba"
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        // Scroll suave al hacer click en "Volver arriba"
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
