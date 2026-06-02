@@ -1,1 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicaciones Avanzadas de Amplificadores Operacionales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        /* ========== BARRA DE NAVEGACIÓN ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e4d5f 50%, #1a3a4a 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #6c63ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-logo:hover {
+            color: #f0c840;
+            transform: translateX(-5px);
+        }
+        
+        .nav-logo i {
+            font-size: 1.2rem;
+        }
+        
+        .nav-title {
+            color: #ffffff;
+            font-size: 1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        /* ========== CONTENEDOR PRINCIPAL ========== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e4d5f 50%, #1a3a4a 100%);
+            color: #ffffff;
+            padding: 50px 40px 35px;
+            text-align: center;
+            border-bottom: 4px solid #e8b830;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #e8b830;
+            border-radius: 2px;
+        }
+        
+        .header h1 {
+            font-size: 2.4em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #c5d5dd;
+            letter-spacing: 1px;
+        }
+        
+        .content {
+            padding: 45px 50px 55px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #e0e6ec;
+            transition: all 0.3s ease;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section:hover {
+            background: #fafbfd;
+            padding-left: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+        
+        .section-title {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #1a3a4a;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #e8b830;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        
+        .section p {
+            text-align: justify;
+            color: #3a4a56;
+            font-size: 1.05em;
+            margin-top: 8px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #fef9e7 0%, #fdf2d2 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1a3a4a;
+            border-left: 3px solid #e8b830;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        
+        .technical-term {
+            font-family: 'Courier New', monospace;
+            background: #ecf0f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+            color: #1e4d5f;
+            letter-spacing: 0.5px;
+        }
+        
+        .team-member {
+            color: #1e4d5f;
+            font-weight: 600;
+            border-bottom: 2px dotted #c5d5dd;
+            padding-bottom: 1px;
+        }
+        
+        .stat-highlight {
+            font-family: 'Courier New', monospace;
+            color: #1a3a4a;
+            font-weight: 700;
+            background: #e8f0f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+        
+        .tool-name {
+            font-style: italic;
+            font-weight: 600;
+            color: #1e4d5f;
+            border-bottom: 2px solid #e8b830;
+            padding-bottom: 1px;
+        }
+        
+        /* ========== SECCIÓN DE DOCUMENTACIÓN ========== */
+        .documentation-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed #e8b830;
+            border-radius: 16px;
+            padding: 35px 40px;
+            margin: 30px 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .documentation-section:hover {
+            border-style: solid;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .documentation-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a3a4a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .documentation-title i {
+            color: #e8b830;
+            font-size: 1.3em;
+        }
+        
+        .documentation-description {
+            color: #3a4a56;
+            font-size: 1.05em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .pdf-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e4d5f 100%);
+            color: #ffffff;
+            padding: 16px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.15em;
+            font-weight: 600;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            border: 2px solid #e8b830;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pdf-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 184, 48, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .pdf-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: #e8b830;
+            color: #1a3a4a;
+            border-color: #1a3a4a;
+        }
+        
+        .pdf-button:hover::before {
+            left: 100%;
+        }
+        
+        .pdf-button i {
+            font-size: 1.8em;
+            transition: transform 0.3s ease;
+        }
+        
+        .pdf-button:hover i {
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+        
+        .pdf-info {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .pdf-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a6c7a;
+            font-size: 0.9em;
+        }
+        
+        .pdf-info-item i {
+            color: #e8b830;
+        }
+        
+        /* ========== BOTÓN VOLVER ARRIBA ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e4d5f 100%);
+            color: #e8b830;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            font-size: 1.2rem;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: #e8b830;
+            color: #1a3a4a;
+        }
+        
+        .footer {
+            background: #1a3a4a;
+            color: #c5d5dd;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer a {
+            color: #e8b830;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #f0c840;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .header {
+                padding: 35px 20px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 30px 25px 35px;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+                padding-bottom: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.3em;
+            }
+            
+            .nav-title {
+                display: none;
+            }
+            
+            .documentation-section {
+                padding: 25px 20px;
+            }
+            
+            .pdf-button {
+                padding: 14px 25px;
+                font-size: 1em;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== BARRA DE NAVEGACIÓN ========== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Portafolio
+            </a>
+            <span class="nav-title">📘 Documento de Referencia</span>
+        </div>
+    </nav>
 
+    <!-- ========== CONTENIDO PRINCIPAL ========== -->
+    <div class="container">
+        <div class="header">
+            <h1>📘 Aplicaciones Avanzadas de<br>Amplificadores Operacionales</h1>
+            <div class="subtitle">Documento de Referencia en Electrónica Analógica</div>
+        </div>
+        
+        <div class="content">
+            <!-- SECCIÓN DE DOCUMENTACIÓN PDF -->
+            <div class="documentation-section">
+                <div class="documentation-title">
+                    <i class="fas fa-file-pdf"></i>
+                    Ver Documentación
+                </div>
+                <p class="documentation-description">
+                    Accede al documento completo con todo el desarrollo teórico, 
+                    simulaciones en MultiSim y resultados experimentales validados.
+                </p>
+                <a href="docs/amplificadores-operacionales.pdf" class="pdf-button" target="_blank">
+                    <i class="fas fa-file-pdf"></i>
+                    Abrir Documento PDF
+                    <i class="fas fa-external-link-alt" style="font-size: 0.9em;"></i>
+                </a>
+                <div class="pdf-info">
+                    <div class="pdf-info-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Formato PDF</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-weight"></i>
+                        <span>2.4 MB</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-language"></i>
+                        <span>Español</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 1: Presentación -->
+            <div class="section">
+                <div class="section-title">1. Presentación</div>
+                <p>
+                    La obra <span class="highlight">"Aplicaciones Avanzadas de Amplificadores Operacionales"</span> se consolidó como un documento de referencia en electrónica analógica, cuya información se presenta de manera exhaustiva y detallada. La estructura del libro fue meticulosamente diseñada para asegurar una integración perfecta entre el marco teórico y la praxis. Cada capítulo articula con claridad un objetivo de aprendizaje fundamental —análisis en pequeña y gran señal, respuesta en frecuencia, y estabilidad— vinculado a una meta práctica medible: la construcción y validación de una topología específica. La comunicación del proyecto se distingue por un uso riguroso y profesional del lenguaje técnico; la notación matemática en <span class="technical-term">LaTeX</span> y la terminología de circuitos integrados se emplean con precisión quirúrgica, sin ambigüedades, facilitando una comprensión de alto nivel que satisface tanto a la academia como a la industria.
+                </p>
+            </div>
+            
+            <!-- Sección 2: Documentación del Proceso -->
+            <div class="section">
+                <div class="section-title">2. Documentación del Proceso</div>
+                <p>
+                    La documentación del proceso constituye un registro excepcional de la evolución integral del proyecto, desde la concepción teórica hasta la verificación física. Mediante el uso de un sistema de control de versiones (<span class="technical-term">Git</span>) integrado al flujo de <span class="technical-term">LaTeX</span>, se registró cada iteración de los manuscritos y esquemas en tiempo real. Como especialista en simulación <span class="tool-name">MultiSim</span>, documenté de forma exhaustiva los puntos de divergencia entre el modelo ideal simulado y el comportamiento real del componente, analizando en detalle errores no lineales como el <span class="technical-term">slew rate</span>, las <span class="technical-term">corrientes de bias</span> y el <span class="technical-term">recorte asimétrico</span>. Los hitos y los fallos críticos, como una oscilación parásita detectada en la etapa de prototipado de un filtro activo de orden superior, fueron inmediatamente registrados con su respectivo diagnóstico —capacitancia parásita por layout del protoboard— y la solución implementada —rediseño del plano de tierra y adición de una red de compensación <span class="technical-term">lead-lag</span>—. Este análisis profundo transforma los contratiempos en ejemplos pedagógicos de alta ingeniería.
+                </p>
+            </div>
+            
+            <!-- Sección 3: Trabajo en Equipo -->
+            <div class="section">
+                <div class="section-title">3. Trabajo en Equipo</div>
+                <p>
+                    Dentro del equipo, mi rol como experto en simulación <span class="tool-name">MultiSim</span> fue fundamental para la dinámica de colaboración. Trabajé en pareja con <span class="team-member">José Fernando Ramos</span>, especialista en análisis matemático, bajo una metodología de <span class="highlight">"autoría por pares rotativos"</span>, garantizando que cada ecuación diferencial tuviera una contraparte visual validada en mis simulaciones. Participé activamente en sesiones de revisión cruzada, donde mi trabajo de simulación era contrastado con el prototipado físico de <span class="team-member">Nicolás González Vega</span>, asegurando la coherencia entre el modelo digital y el hardware real. Un ejemplo clave de esta dinámica fue la adaptación del cronograma ante los hallazgos de Nicolás sobre inestabilidades térmicas; lejos de ser un retraso, esta pausa reflexiva integró el aprendizaje empírico directamente en el manuscrito final, enriqueciendo el análisis colectivo.
+                </p>
+            </div>
+            
+            <!-- Sección 4: Aporte Personal -->
+            <div class="section">
+                <div class="section-title">4. Aporte Personal</div>
+                <p>
+                    Mi contribución personal al proyecto fue determinante como experto en simulación <span class="tool-name">MultiSim</span> y como puente entre la teoría matemática y la verificación experimental. Desarrollé todos los esquemáticos de simulación que acompañan cada una de las <span class="highlight">seis aplicaciones</span> del libro, asegurando que cada modelo reflejara con fidelidad el comportamiento esperado según las deducciones de <span class="team-member">José Fernando</span>. Un hito crítico de mi aporte fue la detección de una discrepancia fundamental en mis propios modelos: identifiqué que el <span class="technical-term">modelo macro de MultiSim</span> para el amplificador operacional no contemplaba correctamente el efecto de la carga en lazo abierto, lo que reporté de inmediato al equipo. Este hallazgo, validado posteriormente en hardware por <span class="team-member">Nicolás</span>, no solo corrigió un tecnicismo, sino que elevó el rigor de toda la publicación, impactando positivamente la calidad del análisis crítico en las <span class="highlight">seis aplicaciones</span> desarrolladas.
+                </p>
+            </div>
+            
+            <!-- Sección 5: Resultados -->
+            <div class="section">
+                <div class="section-title">5. Resultados</div>
+                <p>
+                    Los resultados finales están documentados con una precisión y exhaustividad que reflejan la madurez del proceso. El producto tangible es un libro técnico de <span class="highlight">seis capítulos</span>, cada uno dedicado a una aplicación avanzada verificada (desde amplificadores de instrumentación hasta convertidores V-I de precisión). Para cada una de las seis aplicaciones, mis simulaciones en <span class="tool-name">MultiSim</span> son parte central del procedimiento documentado: se incluye la deducción formal de la función de transferencia, el esquemático de simulación, la lista de materiales, y una comparación de <span class="highlight">"doble pantalla"</span> donde se yuxtaponen la forma de onda simulada por mí y la captura real del osciloscopio. El análisis crítico no se limita a validar el éxito, sino que cuantifica las desviaciones: por ejemplo, se midió una diferencia de fase de <span class="stat-highlight">3.2°</span> entre el filtro teórico y el físico a <span class="stat-highlight">10 kHz</span>, atribuida a tolerancias de componentes pasivos del <span class="stat-highlight">5%</span>, concluyendo con recomendaciones de diseño para aplicaciones de misión crítica donde se requiera un <span class="stat-highlight">matching de componentes por debajo del 1%</span>.
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            📐 Documento de Ingeniería Electrónica • Simulación y Validación Experimental • 2024
+            <br>
+            <a href="index.html">← Volver al Portafolio Principal</a>
+        </div>
+    </div>
+
+    <!-- ========== BOTÓN VOLVER ARRIBA ========== -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <script>
+        // Mostrar/ocultar botón "Volver arriba"
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        // Scroll suave al hacer click en "Volver arriba"
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
