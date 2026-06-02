@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos y Diseño de PCB - Medidor de Humedad para Café y Cacao | Daniel Felipe Garrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        /* ========== BARRA DE NAVEGACIÓN ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e5f3a 50%, #1a3a4a 100%);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #6c63ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-logo:hover {
+            color: #f0c840;
+            transform: translateX(-5px);
+        }
+        
+        .nav-logo i {
+            font-size: 1.1rem;
+        }
+        
+        .nav-title {
+            color: #c5d5dd;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+        
+        /* ========== CONTENEDOR PRINCIPAL ========== */
+        .container {
+            max-width: 950px;
+            margin: 0 auto 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e5f3a 50%, #1a3a4a 100%);
+            color: #ffffff;
+            padding: 50px 40px 35px;
+            text-align: center;
+            border-bottom: 4px solid #e8b830;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #e8b830;
+            border-radius: 2px;
+        }
+        
+        .header .project-icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.3;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #c5d5dd;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        .header .author {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #e8b830;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .content {
+            padding: 45px 50px 55px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #e0e6ec;
+            transition: all 0.3s ease;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section:hover {
+            background: #fafbfd;
+            padding-left: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1a3a4a;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #e8b830;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        
+        .section p {
+            text-align: justify;
+            color: #3a4a56;
+            font-size: 1.05em;
+            margin-top: 8px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #fef9e7 0%, #fdf2d2 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1a3a4a;
+            border-left: 3px solid #e8b830;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        
+        .technical-term {
+            font-family: 'Courier New', monospace;
+            background: #ecf0f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+            color: #1e4d5f;
+            letter-spacing: 0.5px;
+        }
+        
+        .component-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #1e5f3a;
+            background: #e8f5e9;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.93em;
+        }
+        
+        .stat-highlight {
+            font-family: 'Courier New', monospace;
+            color: #1a3a4a;
+            font-weight: 700;
+            background: #e8f0f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+        
+        .tool-name {
+            font-style: italic;
+            font-weight: 600;
+            color: #1e5f3a;
+            border-bottom: 2px solid #e8b830;
+            padding-bottom: 1px;
+        }
+        
+        .first-person {
+            color: #1a3a4a;
+            font-weight: 600;
+            font-style: italic;
+            background: linear-gradient(120deg, #fef9e7 0%, #fdf5e6 100%);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+        
+        .standard-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #1a3a4a;
+            background: #f0f4f8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.93em;
+            border: 1px solid #c5d5dd;
+        }
+        
+        .cost-badge {
+            display: inline-block;
+            background: #1e5f3a;
+            color: #ffffff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+        
+        .budget-badge {
+            display: inline-block;
+            background: #e8b830;
+            color: #1a3a4a;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+        
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 12px;
+        }
+        
+        .section ul li {
+            padding: 6px 0 6px 28px;
+            position: relative;
+            color: #3a4a56;
+            font-size: 1.03em;
+        }
+        
+        .section ul li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: #e8b830;
+            font-size: 0.7em;
+            top: 10px;
+        }
+        
+        /* ========== SECCIÓN DE DOCUMENTACIÓN PDF ========== */
+        .documentation-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #edf0f5 100%);
+            border: 2px dashed #e8b830;
+            border-radius: 16px;
+            padding: 35px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .documentation-section:hover {
+            border-style: solid;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #fafdf9 0%, #f5f8f5 100%);
+        }
+        
+        .documentation-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a3a4a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .documentation-title i {
+            color: #e8b830;
+            font-size: 1.3em;
+        }
+        
+        .documentation-description {
+            color: #3a4a56;
+            font-size: 1.05em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .pdf-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e5f3a 50%, #1a3a4a 100%);
+            color: #ffffff;
+            padding: 16px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.15em;
+            font-weight: 600;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            border: 2px solid #e8b830;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pdf-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 184, 48, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .pdf-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: #e8b830;
+            color: #1a3a4a;
+            border-color: #1a3a4a;
+        }
+        
+        .pdf-button:hover::before {
+            left: 100%;
+        }
+        
+        .pdf-button i {
+            font-size: 1.6em;
+            transition: transform 0.3s ease;
+        }
+        
+        .pdf-button:hover i {
+            animation: iconPulse 1s infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .pdf-info {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .pdf-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a6c7a;
+            font-size: 0.9em;
+        }
+        
+        .pdf-info-item i {
+            color: #e8b830;
+        }
+        
+        /* ========== BOTÓN VOLVER ARRIBA ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1a3a4a 0%, #1e5f3a 50%, #1a3a4a 100%);
+            color: #e8b830;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            font-size: 1.2rem;
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: #e8b830;
+            color: #1a3a4a;
+        }
+        
+        .footer {
+            background: #1a3a4a;
+            color: #c5d5dd;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer a {
+            color: #e8b830;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #f0c840;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .header {
+                padding: 35px 20px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .header .project-icon {
+                font-size: 2.2em;
+            }
+            
+            .content {
+                padding: 30px 25px 35px;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+                padding-bottom: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.2em;
+            }
+            
+            .nav-title {
+                display: none;
+            }
+            
+            .documentation-section {
+                padding: 25px 20px;
+            }
+            
+            .pdf-button {
+                padding: 14px 25px;
+                font-size: 1em;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== BARRA DE NAVEGACIÓN ========== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Portafolio
+            </a>
+        </div>
+    </nav>
+
+    <!-- ========== CONTENIDO PRINCIPAL ========== -->
+    <div class="container">
+        <div class="header">
+            <h1>Tutorial de Diseño de PCB y Manufactura Digital en EasyEDA</h1>
+            <div class="subtitle">Medidor de Humedad para Café y Cacao &bull; Diseño Técnico y Documentación</div>
+        </div>
+        
+        <div class="content">
+            <!-- SECCIÓN DE DOCUMENTACIÓN PDF -->
+            <div class="documentation-section">
+                <div class="documentation-title">
+                    <i class="fas fa-file-pdf"></i>
+                    Ver Documentación
+                </div>
+                <p class="documentation-description">
+                    Accede al tutorial técnico completo con el diseño de PCB, 
+                    esquemáticos, archivos GERBER y guía de fabricación.
+                </p>
+                <a href="../Documents/Guía de Diseño de PCB y Manufactura Digital - Proyecto 3 V2 (2).pdf" class="pdf-button" target="_blank">
+                    <i class="fas fa-file-pdf"></i>
+                    Abrir Documento PDF
+                    <i class="fas fa-external-link-alt" style="font-size: 0.9em;"></i>
+                </a>
+                <div class="pdf-info">
+                    <div class="pdf-info-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Formato PDF</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-microchip"></i>
+                        <span>Tutorial + GERBER</span>
+                    </div>
+                    <div class="pdf-info-item">
+                        <i class="fas fa-language"></i>
+                        <span>Español</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen Ejecutivo -->
+            <div class="section">
+                <div class="section-title">🎯 Resumen Ejecutivo</div>
+                <p>
+                    <span class="first-person">Fui el encargado de elaborar el tutorial técnico y ejecutar el diseño de la placa en <span class="tool-name">EasyEDA</span></span> para el desarrollo de una PCB profesional de un medidor de humedad para café y cacao, en coordinación con el líder del proceso, quien coordinó las pruebas de laboratorio y la validación funcional del sistema. El proyecto consistió en el diseño y la preparación para manufactura de una placa de circuito impreso (PCB) profesional, partiendo del esquemático del medidor. El objetivo fue producir un diseño optimizado para fabricación industrial en <span class="tool-name">JLCPCB</span>, cumpliendo estándares internacionales de calidad, con un presupuesto inicial de <span class="budget-badge">20 USD</span> que <span class="first-person">finalmente ajusté a <span class="cost-badge">40 USD</span></span> debido a la cantidad de componentes extendidos necesarios (pines de medición, conectores, circuitos integrados y diodos).
+                </p>
+            </div>
+            
+            <!-- Optimización de Área y Estrategia de Capas -->
+            <div class="section">
+                <div class="section-title">📐 Optimización de Área y Estrategia de Capas</div>
+                <p>
+                    Antes de colocar componentes, <span class="first-person">definí el tamaño de la PCB</span> considerando que el costo en <span class="tool-name">JLCPCB</span> depende directamente del área. <span class="first-person">Establecí un formato aproximado de <span class="stat-highlight">70 mm × 45 mm</span></span> para aprovechar las tarifas económicas de fabricación masiva. <span class="first-person">Implementé un plano de tierra sólido (<span class="technical-term">GND Plane</span>) en la capa inferior</span> para minimizar el ruido electromagnético y actuar como disipador de calor, mientras que <span class="first-person">la capa superior la destiné a señales principales y componentes SMD</span>. Mantuve una zona de exclusión de cobre de al menos <span class="stat-highlight">0.5 mm</span> desde el borde de la placa para evitar daños durante el corte (<span class="technical-term">V-cut</span>), verificando además que ninguna etiqueta de serigrafía quedara sobre los pads de soldadura siguiendo criterios <span class="standard-name">DFM</span>.
+                </p>
+            </div>
+            
+            <!-- Consideraciones de Frecuencia -->
+            <div class="section">
+                <div class="section-title">📡 Consideraciones de Frecuencia (100 kHz)</div>
+                <p>
+                    Aunque <span class="stat-highlight">100 kHz</span> no se considera alta frecuencia en aplicaciones RF, en el diseño de PCBs analógicas con amplificadores operacionales <span class="component-name">TL082</span>/<span class="component-name">TL084</span> (<span class="technical-term">GBW ≈ 3 MHz</span>) esta frecuencia exige consideraciones especiales. <span class="first-person">Coloqué condensadores de desacoplo de <span class="stat-highlight">100 nF</span> lo más cerca posible de los pines de alimentación (V+ y V-)</span> de cada integrado. <span class="first-person">Apliqué la regla <span class="highlight">"3W"</span></span> para evitar diafonía entre pistas críticas, manteniendo una distancia entre centros de pistas de al menos tres veces el ancho de la pista. <span class="first-person">Ubiqué las resistencias de realimentación extremadamente cerca de los pines del integrado</span> para minimizar capacitancias parásitas en los nodos de entrada, y <span class="first-person">utilicé un ancho de pista de señal de <span class="stat-highlight">10 mil (0.254 mm)</span></span> según la norma <span class="standard-name">IPC-2221</span>.
+                </p>
+            </div>
+            
+            <!-- Normas Internacionales IPC y Configuración DRC -->
+            <div class="section">
+                <div class="section-title">📋 Normas Internacionales IPC y Configuración DRC</div>
+                <p>
+                    Para garantizar un diseño profesional, <span class="first-person">regí todo el proceso por estándares internacionales de la asociación IPC</span>. <span class="first-person">Apliqué la <span class="standard-name">IPC-2221</span></span> para el cálculo del ancho de pista basado en elevación de temperatura permitida (<span class="stat-highlight">10 °C</span>) y separación según voltaje (<span class="technical-term">clearance</span> de <span class="stat-highlight">6-10 mil</span>). <span class="first-person">Utilicé también la <span class="standard-name">IPC-7351</span></span> para el diseño de huellas (<span class="technical-term">footprints</span>), asegurando pads con dimensiones adecuadas para soldadura robusta. <span class="first-person">Basé los criterios de aceptación en la <span class="standard-name">IPC-A-610 Clase 2</span></span> (electrónica de servicio dedicado), orientada a manufactura confiable para uso continuo. <span class="first-person">Configuré todos estos parámetros en el motor <span class="technical-term">DRC</span> de <span class="tool-name">EasyEDA</span></span>, incluyendo un <span class="technical-term">annular ring</span> mínimo de <span class="stat-highlight">5 mil</span> para vías.
+                </p>
+            </div>
+            
+            <!-- Selección de Componentes y Justificación Técnica -->
+            <div class="section">
+                <div class="section-title">🔧 Selección de Componentes y Justificación Técnica</div>
+                <p>
+                    <span class="first-person">Una decisión crítica que tomé en el diseño fue la sustitución del <span class="component-name">MCP6022</span> por el <span class="component-name">TL082</span></span>. Mientras que el <span class="component-name">MCP6022</span> posee un límite de voltaje aproximado de <span class="stat-highlight">5.5 V a 6 V</span>, el <span class="component-name">TL082</span> soporta rangos de hasta <span class="stat-highlight">±18 V</span>, garantizando mayor seguridad eléctrica y estabilidad al trabajar con fuentes de <span class="stat-highlight">±9 V</span>. <span class="first-person">Prioricé la disponibilidad comercial de los componentes</span> para mantener viabilidad económica y facilidad de ensamblaje, incluyendo amplificadores operacionales <span class="component-name">TL082</span>/<span class="component-name">TL084</span>, sensores de humedad, pines de medición y conexión, resistencias, capacitores y diodos. <span class="first-person">Organicé los componentes por agrupación funcional</span> (sensor, procesamiento y salida) y <span class="first-person">los alineé en el mismo eje</span> para facilitar procesos de soldadura por reflujo y mantenimiento.
+                </p>
+            </div>
+            
+            <!-- Coordinación de Pruebas y Validación Experimental -->
+            <div class="section">
+                <div class="section-title">🧪 Coordinación de Pruebas y Validación Experimental</div>
+                <p>
+                    Durante el desarrollo del proyecto, <span class="first-person">trabajé en estrecha coordinación con el líder del proceso</span>, quien ejecutó las pruebas de laboratorio orientadas a validar el comportamiento eléctrico del sistema de medición de humedad, verificar estabilidad de señal y comprobar la respuesta de las etapas analógicas. Los resultados de estas pruebas <span class="first-person">me permitieron ajustar los criterios de diseño, la selección de componentes y la distribución electrónica en la PCB</span> para mejorar el rendimiento general del dispositivo y garantizar que el diseño final cumpliera los requisitos técnicos del proyecto.
+                </p>
+            </div>
+            
+            <!-- Entregables para Fabricación y Resultado Final -->
+            <div class="section">
+                <div class="section-title">📦 Entregables para Fabricación y Resultado Final</div>
+                <p>
+                    Finalizando el ejercicio, <span class="first-person">preparé y envié los archivos necesarios para la fabricación de la placa a <span class="tool-name">JLCPCB</span></span>:
+                </p>
+                <ul>
+                    <li>Archivos <span class="standard-name">GERBER</span> (capas de cobre, máscara de soldadura, serigrafía y borde de corte)</li>
+                    <li><span class="standard-name">BOM</span> (Bill of Materials o lista de materiales)</li>
+                    <li>Archivo <span class="standard-name">Pick & Place</span> (coordenadas para ensamblaje automatizado)</li>
+                </ul>
+                <p style="margin-top: 14px;">
+                    Aunque inicialmente <span class="first-person">busqué mantener el proyecto por debajo de los <span class="budget-badge">20 USD</span></span>, el costo final alcanzó los <span class="cost-badge">40 USD</span> debido a la inclusión de componentes extendidos fundamentales, entre ellos pines de medición y conexión, circuitos integrados y diodos requeridos para el correcto funcionamiento del medidor de humedad.
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            📐 Daniel Felipe Garrido • Diseño de PCB • EasyEDA • Normas IPC • JLCPCB • 2024
+            <br>
+            <a href="../index.html">← Volver al Portafolio Principal</a>
+        </div>
+    </div>
+
+    <!-- ========== BOTÓN VOLVER ARRIBA ========== -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <script>
+        // Mostrar/ocultar botón "Volver arriba"
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        // Scroll suave al hacer click en "Volver arriba"
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
